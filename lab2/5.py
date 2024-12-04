@@ -21,8 +21,8 @@ points_file = 'points_data.json'
 with open(points_file, 'r') as f:
     points_data = json.load(f)
     objpoints = [np.array(pts) for pts in points_data['object_points']]
-    imgpoints_left = [np.array(pts) for pts in points_data['imgpoints_left']]
-    imgpoints_right = [np.array(pts) for pts in points_data['imgpoints_right']]
+    image_points_left = [np.array(pts) for pts in points_data['image_points_left']]
+    image_points_right = [np.array(pts) for pts in points_data['image_points_right']]
 
 # Load images
 print("Loading images...")
@@ -30,8 +30,8 @@ images_left = sorted(glob.glob('lab2/s1/left_*.png'))
 images_right = sorted(glob.glob('lab2/s1/right_*.png'))
 
 # Read the first pair of images for visualization
-imgL = cv.imread(images_left[10])
-imgR = cv.imread(images_right[10])
+imgL = cv.imread(images_left[0])
+imgR = cv.imread(images_right[0])
 grayL = cv.cvtColor(imgL, cv.COLOR_BGR2GRAY)
 grayR = cv.cvtColor(imgR, cv.COLOR_BGR2GRAY)
 
@@ -52,14 +52,14 @@ def draw_epipolar_lines(img1, img2, lines, pts1, pts2):
     return img1, img2
 
 # Find epilines corresponding to points in right image (second image) and draw them on the left image
-lines1 = cv.computeCorrespondEpilines(imgpoints_right[0].reshape(-1, 1, 2), 2, F)
+lines1 = cv.computeCorrespondEpilines(image_points_right[0].reshape(-1, 1, 2), 2, F)
 lines1 = lines1.reshape(-1, 3)
-img5, img6 = draw_epipolar_lines(grayL, grayR, lines1, imgpoints_left[0], imgpoints_right[0])
+img5, img6 = draw_epipolar_lines(grayL, grayR, lines1, image_points_left[0], image_points_right[0])
 
 # Find epilines corresponding to points in left image (first image) and draw them on the right image
-lines2 = cv.computeCorrespondEpilines(imgpoints_left[0].reshape(-1, 1, 2), 1, F)
+lines2 = cv.computeCorrespondEpilines(image_points_left[0].reshape(-1, 1, 2), 1, F)
 lines2 = lines2.reshape(-1, 3)
-img3, img4 = draw_epipolar_lines(grayR, grayL, lines2, imgpoints_right[0], imgpoints_left[0])
+img3, img4 = draw_epipolar_lines(grayR, grayL, lines2, image_points_right[0], image_points_left[0])
 
 # Display the images with epipolar lines
 plt.subplot(121), plt.imshow(img5)
