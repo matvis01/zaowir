@@ -1,0 +1,1 @@
+Rzeczywista wielkość pola (50mm)
